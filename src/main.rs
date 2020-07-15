@@ -4,13 +4,28 @@ use std::fs;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let query = &args[1];
-    let filename = &args[2];
+    let config = Config::new(&args);
 
-    println!("In file {}", filename);
+    println!("In file {}", config.filename);
 
-    let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
+    let contents =
+        fs::read_to_string(config.filename).expect("Something went wrong reading the file");
 
-    println!("{:?}", (query, filename));
     println!("With text:\n{}", contents)
+}
+
+struct Config {
+    query: String,
+    filename: String,
+}
+
+impl Config {
+    fn new(args: &[String]) -> Config {
+        if args.len() < 3 {
+            panic!("not enough arguments")
+        }
+        let query = args[1].clone();
+        let filename = args[2].clone();
+        Config { query, filename }
+    }
 }
